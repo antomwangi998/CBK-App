@@ -2,65 +2,67 @@ name: Build CBK APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
   build-android:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     env:
-      ANDROID_HOME: ${{ github.workspace }}/android-sdk
-      PATH: ${{ github.workspace }}/android-sdk/cmdline-tools/cmdline-tools/bin:${{ github.workspace }}/android-sdk/platform-tools:$PATH
+      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
 
     steps:
-      - name: Checkout repository
+      # 1️⃣ Checkout repo (avoids tar errors)
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup Python 3.10
+      # 2️⃣ Set up Python 3.11 (latest supported)
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: 3.11
 
-      - name: Setup Java 17
+      # 3️⃣ Install system dependencies (Buildozer & Android SDK dependencies)
+      - name: Install system packages
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip python3-setuptools python3-virtualenv \
+            build-essential git zip unzip wget openjdk-17-jdk tar
+
+      # 4️⃣ Setup Java 17 for SDK
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Install system dependencies
+      # 5️⃣ Install Buildozer and dependencies
+      - name: Install Buildozer
         run: |
-          sudo apt-get update
-          sudo apt-get install -y zip unzip wget curl build-essential git
-
-      - name: Install Buildozer & Cython
-        run: |
-          python3 -m pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install cython buildozer
 
-      - name: Download Android SDK cmdline-tools
+      # 6️⃣ Accept all Android SDK licenses
+      - name: Setup Android SDK
         run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          cd $ANDROID_HOME/cmdline-tools
+          mkdir -p $ANDROID_SDK_ROOT
           wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-          unzip cmdline-tools.zip
-          rm cmdline-tools.zip
+          unzip cmdline-tools.zip -d $ANDROID_SDK_ROOT
+          mv $ANDROID_SDK_ROOT/cmdline-tools $ANDROID_SDK_ROOT/latest
+          yes | $ANDROID_SDK_ROOT/latest/bin/sdkmanager --licenses
+          $ANDROID_SDK_ROOT/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses
-
-      - name: Install required Android packages
+      # 7️⃣ Build APK with Buildozer
+      - name: Build APK
         run: |
-          sdkmanager "platform-tools" \
-                     "platforms;android-33" \
-                     "build-tools;33.0.2"
+          buildozer android debug
 
-      - name: Build APK with Buildozer
-        run: buildozer android debug
-
-      - name: Upload APK artifact
+      # 8️⃣ Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: CBK-debug-apk
+          name: CBK-App-debug-apk
           path: bin/*.apk
