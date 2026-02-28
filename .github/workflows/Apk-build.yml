@@ -2,7 +2,7 @@ name: Build CBK APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -13,52 +13,49 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
       - name: Install system dependencies
         run: |
-          sudo apt update
-          sudo apt install -y openjdk-17-jdk zip unzip
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip python3-setuptools python3-wheel \
+            build-essential git zip unzip openjdk-17-jdk \
+            libffi-dev libssl-dev zlib1g-dev \
+            libncurses5-dev libsqlite3-dev libreadline-dev \
+            libbz2-dev liblzma-dev curl
 
-      - name: Set JAVA_HOME
-        run: echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+      - name: Install Buildozer + Cython
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install cython buildozer
 
-      - name: Download Android SDK Command Line Tools
+      - name: Setup Android SDK + accept licenses
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip commandlinetools-linux-11076708_latest.zip
+          curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip tools.zip
           mv cmdline-tools latest
 
-      - name: Set Android SDK environment variables
-        run: |
-          echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
-          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
-          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses
-
-      - name: Install Android SDK packages
-        run: |
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
-
-      - name: Install Buildozer & dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install buildozer cython virtualenv
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
       - name: Build APK
+        env:
+          ANDROID_HOME: ${{ env.HOME }}/android-sdk
+          PATH: ${{ env.HOME }}/android-sdk/cmdline-tools/latest/bin:${{ env.PATH }}
         run: |
           buildozer android debug
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: CBK-APK
+          name: CBK-debug-apk
           path: bin/*.apk
