@@ -2,47 +2,60 @@ name: Build CBK APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build-android:
-    name: Build Android APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    # 1. Checkout repo
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    # 2. Set up Python 3.10
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.10
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    # 3. Install dependencies
-    - name: Install system packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-pip python3-venv openjdk-11-jdk zip unzip git wget curl \
-        autoconf automake build-essential libtool pkg-config zlib1g-dev
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip python3-setuptools python3-wheel \
+            build-essential git zip unzip openjdk-17-jdk \
+            libffi-dev libssl-dev zlib1g-dev \
+            libncurses5-dev libsqlite3-dev libreadline-dev \
+            libbz2-dev liblzma-dev curl
 
-    # 4. Upgrade pip and install Python packages
-    - name: Install Python packages
-      run: |
-        python -m pip install --upgrade pip setuptools wheel
-        pip install cython buildozer
+      - name: Install Buildozer
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install cython buildozer
 
-    # 5. Build the APK
-    - name: Build APK with Buildozer
-      run: |
-        buildozer android debug
+      - name: Setup Android SDK
+        run: |
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          curl -o tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip tools.zip
+          mv cmdline-tools latest
 
-    # 6. Upload the APK as artifact
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: CBK-APK
-        path: bin/*.apk
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+      - name: Build APK
+        env:
+          ANDROID_HOME: ${{ env.HOME }}/android-sdk
+          PATH: ${{ env.HOME }}/android-sdk/cmdline-tools/latest/bin:${{ env.PATH }}
+        run: |
+          buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CBK-debug-apk
+          path: bin/*.apk
