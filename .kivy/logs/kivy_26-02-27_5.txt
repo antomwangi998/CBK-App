@@ -1,0 +1,138 @@
+[INFO   ] Logger: Record log in /storage/emulated/0/CBK/.kivy/logs/kivy_26-02-27_5.txt
+[INFO   ] Kivy: v2.3.1
+[INFO   ] Kivy: Installed at "/data/user/0/ru.iiec.pydroid3/files/aarch64-linux-android/lib/python3.13/site-packages/kivy/__init__.py"
+[INFO   ] Python: v3.13.2 (main, Apr 27 2025, 04:34:27) [GCC 11.4.0]
+[INFO   ] Python: Interpreter at "/data/user/0/ru.iiec.pydroid3/files/aarch64-linux-android/bin/python3"
+[INFO   ] Logger: Purge log fired. Processing...
+[INFO   ] Logger: Purge finished!
+[INFO   ] Factory: 195 symbols loaded
+[INFO   ] Image: Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[INFO   ] KivyMD: 1.2.0, git-Unknown, 2026-02-19 (installed at "/data/user/0/ru.iiec.pydroid3/files/aarch64-linux-android/lib/python3.13/site-packages/kivymd/__init__.py")
+[WARNING] KivyMD: Version 1.2.0 is deprecated and is no longer supported. Use KivyMD version 2.0.0 from the master branch (pip install https://github.com/kivymd/KivyMD/archive/master.zip)
+[INFO   ] Text: Provider: sdl2
+[INFO   ] Window: Provider: sdl2
+[INFO   ] GL: Using the "OpenGL ES 2" graphics system
+[INFO   ] GL: Backend used <sdl2>
+[INFO   ] GL: OpenGL version <b'OpenGL ES 3.2 v1.r49p1-04eac0.c0d5d2455ae493d3074184709bed7b5a'>
+[INFO   ] GL: OpenGL vendor <b'ARM'>
+[INFO   ] GL: OpenGL renderer <b'Mali-G57'>
+[INFO   ] GL: OpenGL parsed version: 3, 2
+[INFO   ] GL: Texture max size <16383>
+[INFO   ] GL: Texture max units <64>
+[INFO   ] Window: auto add sdl2 input provider
+[INFO   ] Window: virtual keyboard not allowed, single mode, not docked
+[INFO   ] Clipboard: Provider: android
+[INFO   ] CryptoManager: Initialized v3 with AES-256-GCM
+[INFO   ] GL: NPOT texture support is available
+[INFO   ] HelaSacco: App started
+[INFO   ] HelaSacco: MDLabel alignment patch applied
+[WARNING] Base: Unknown <android> provider
+[INFO   ] Base: Start application main loop
+[WARNING] Deprecated property "<NumericProperty name=width_mult>" of object "<kivymd.uix.toolbar.toolbar.OverFlowMenu object at 0x700169dfd0>" has been set, it will be removed in a future version
+[INFO   ] HelaSacco: registered screen "dashboard"
+[ERROR  ] Dashboard load error: no such table: loan_schedules
+[WARNING] stderr: Traceback (most recent call last):
+[WARNING] stderr:   File "/storage/emulated/0/CBK/screens.py", line 1117, in _load_data
+[WARNING] stderr:     nxt = self.app.db.fetch_one(
+[WARNING] stderr:         "SELECT MIN(due_date) as d FROM loan_schedules ls "
+[WARNING] stderr:         "JOIN loans l ON ls.loan_id=l.id "
+[WARNING] stderr:         "WHERE l.member_id=? AND ls.status='pending' AND ls.due_date>=date('now')",
+[WARNING] stderr:         (mid,))
+[WARNING] stderr:   File "/storage/emulated/0/CBK/database.py", line 129, in fetch_one
+[WARNING] stderr:     cursor.execute(query, params)
+[WARNING] stderr:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+[WARNING] stderr: sqlite3.OperationalError: no such table: loan_schedules
+[INFO   ] HelaSacco: registered screen "member_list"
+[INFO   ] HelaSacco: registered screen "member_profile"
+[INFO   ] HelaSacco: registered screen "deposit"
+[INFO   ] HelaSacco: registered screen "withdrawal"
+[INFO   ] HelaSacco: registered screen "transfer"
+[INFO   ] HelaSacco: registered screen "loan_application"
+[INFO   ] HelaSacco: registered screen "loan_schedule"
+[INFO   ] HelaSacco: registered screen "repayment"
+[INFO   ] HelaSacco: registered screen "reports"
+[INFO   ] HelaSacco: registered screen "ai_assistant"
+[INFO   ] HelaSacco: registered screen "investments"
+[INFO   ] HelaSacco: registered screen "statement"
+[INFO   ] HelaSacco: registered screen "loan_calculator"
+[INFO   ] HelaSacco: registered screen "my_profile"
+[INFO   ] HelaSacco: registered screen "member_edit"
+[INFO   ] HelaSacco: registered screen "kyc_approval"
+[INFO   ] HelaSacco: registered screen "notifications"
+[INFO   ] HelaSacco: registered screen "settings"
+[INFO   ] HelaSacco: registered screen "branch_management"
+[INFO   ] HelaSacco: registered screen "audit_log"
+[ERROR  ] Dashboard load error: no such table: loan_schedules
+[WARNING] stderr: Traceback (most recent call last):
+[WARNING] stderr:   File "/storage/emulated/0/CBK/screens.py", line 1117, in _load_data
+[WARNING] stderr:     nxt = self.app.db.fetch_one(
+[WARNING] stderr:         "SELECT MIN(due_date) as d FROM loan_schedules ls "
+[WARNING] stderr:         "JOIN loans l ON ls.loan_id=l.id "
+[WARNING] stderr:         "WHERE l.member_id=? AND ls.status='pending' AND ls.due_date>=date('now')",
+[WARNING] stderr:         (mid,))
+[WARNING] stderr:   File "/storage/emulated/0/CBK/database.py", line 129, in fetch_one
+[WARNING] stderr:     cursor.execute(query, params)
+[WARNING] stderr:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+[WARNING] stderr: sqlite3.OperationalError: no such table: loan_schedules
+[ERROR  ] Dashboard load error: no such table: loan_schedules
+[WARNING] stderr: Traceback (most recent call last):
+[WARNING] stderr:   File "/storage/emulated/0/CBK/screens.py", line 1117, in _load_data
+[WARNING] stderr:     nxt = self.app.db.fetch_one(
+[WARNING] stderr:         "SELECT MIN(due_date) as d FROM loan_schedules ls "
+[WARNING] stderr:         "JOIN loans l ON ls.loan_id=l.id "
+[WARNING] stderr:         "WHERE l.member_id=? AND ls.status='pending' AND ls.due_date>=date('now')",
+[WARNING] stderr:         (mid,))
+[WARNING] stderr:   File "/storage/emulated/0/CBK/database.py", line 129, in fetch_one
+[WARNING] stderr:     cursor.execute(query, params)
+[WARNING] stderr:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+[WARNING] stderr: sqlite3.OperationalError: no such table: loan_schedules
+[ERROR  ] Dashboard load error: no such table: loan_schedules
+[WARNING] stderr: Traceback (most recent call last):
+[WARNING] stderr:   File "/storage/emulated/0/CBK/screens.py", line 1117, in _load_data
+[WARNING] stderr:     nxt = self.app.db.fetch_one(
+[WARNING] stderr:         "SELECT MIN(due_date) as d FROM loan_schedules ls "
+[WARNING] stderr:         "JOIN loans l ON ls.loan_id=l.id "
+[WARNING] stderr:         "WHERE l.member_id=? AND ls.status='pending' AND ls.due_date>=date('now')",
+[WARNING] stderr:         (mid,))
+[WARNING] stderr:   File "/storage/emulated/0/CBK/database.py", line 129, in fetch_one
+[WARNING] stderr:     cursor.execute(query, params)
+[WARNING] stderr:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+[WARNING] stderr: sqlite3.OperationalError: no such table: loan_schedules
+[ERROR  ] Dashboard load error: no such table: loan_schedules
+[WARNING] stderr: Traceback (most recent call last):
+[WARNING] stderr:   File "/storage/emulated/0/CBK/screens.py", line 1117, in _load_data
+[WARNING] stderr:     nxt = self.app.db.fetch_one(
+[WARNING] stderr:         "SELECT MIN(due_date) as d FROM loan_schedules ls "
+[WARNING] stderr:         "JOIN loans l ON ls.loan_id=l.id "
+[WARNING] stderr:         "WHERE l.member_id=? AND ls.status='pending' AND ls.due_date>=date('now')",
+[WARNING] stderr:         (mid,))
+[WARNING] stderr:   File "/storage/emulated/0/CBK/database.py", line 129, in fetch_one
+[WARNING] stderr:     cursor.execute(query, params)
+[WARNING] stderr:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+[WARNING] stderr: sqlite3.OperationalError: no such table: loan_schedules
+[ERROR  ] Dashboard load error: no such table: loan_schedules
+[WARNING] stderr: Traceback (most recent call last):
+[WARNING] stderr:   File "/storage/emulated/0/CBK/screens.py", line 1117, in _load_data
+[WARNING] stderr:     nxt = self.app.db.fetch_one(
+[WARNING] stderr:         "SELECT MIN(due_date) as d FROM loan_schedules ls "
+[WARNING] stderr:         "JOIN loans l ON ls.loan_id=l.id "
+[WARNING] stderr:         "WHERE l.member_id=? AND ls.status='pending' AND ls.due_date>=date('now')",
+[WARNING] stderr:         (mid,))
+[WARNING] stderr:   File "/storage/emulated/0/CBK/database.py", line 129, in fetch_one
+[WARNING] stderr:     cursor.execute(query, params)
+[WARNING] stderr:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+[WARNING] stderr: sqlite3.OperationalError: no such table: loan_schedules
+[ERROR  ] Dashboard load error: no such table: loan_schedules
+[WARNING] stderr: Traceback (most recent call last):
+[WARNING] stderr:   File "/storage/emulated/0/CBK/screens.py", line 1117, in _load_data
+[WARNING] stderr:     nxt = self.app.db.fetch_one(
+[WARNING] stderr:         "SELECT MIN(due_date) as d FROM loan_schedules ls "
+[WARNING] stderr:         "JOIN loans l ON ls.loan_id=l.id "
+[WARNING] stderr:         "WHERE l.member_id=? AND ls.status='pending' AND ls.due_date>=date('now')",
+[WARNING] stderr:         (mid,))
+[WARNING] stderr:   File "/storage/emulated/0/CBK/database.py", line 129, in fetch_one
+[WARNING] stderr:     cursor.execute(query, params)
+[WARNING] stderr:     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+[WARNING] stderr: sqlite3.OperationalError: no such table: loan_schedules
+[INFO   ] Base: Leaving application in progress...
+[INFO   ] HelaSacco: App stopped
