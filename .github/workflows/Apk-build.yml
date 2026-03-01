@@ -2,73 +2,61 @@ name: Build CBK APK
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
+
     env:
-      ANDROID_HOME: ${{ github.workspace }}/android-sdk
-      PATH: ${{ github.workspace }}/android-sdk/cmdline-tools/latest/bin:${{ github.workspace }}/android-sdk/platform-tools:${PATH}
+      ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android-sdk
 
     steps:
-      # 1. Checkout the repo
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    # 1. Checkout repository
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # 2. Install system dependencies
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y python3-pip python3-dev python3-venv \
-            git zip unzip openjdk-17-jdk curl wget build-essential \
-            zlib1g-dev libncurses5 libncurses5-dev libffi-dev \
-            libssl-dev libsqlite3-dev libjpeg-dev libfreetype6-dev
+    # 2. Setup Java (JDK 17 for latest Build Tools compatibility)
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: 17
 
-      # 3. Install Buildozer and Cython
-      - name: Install Python tools
-        run: |
-          python3 -m pip install --upgrade pip setuptools wheel
-          python3 -m pip install --upgrade buildozer cython
+    # 3. Install essential packages
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip git unzip wget zip libncurses5 libncurses5-dev
 
-      # 4. Cache Buildozer + Python packages
-      - name: Cache Buildozer packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-buildozer-
+    # 4. Install Buildozer and Cython
+    - name: Install Buildozer
+      run: |
+        pip install --upgrade pip
+        pip install buildozer cython
 
-      # 5. Setup Android SDK / NDK
-      - name: Setup Android SDK and NDK
-        run: |
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          cd $ANDROID_HOME/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-          unzip cmdline-tools.zip -d latest
-          rm cmdline-tools.zip
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2" "ndk;25.2.9519653"
+    # 5. Install Android SDK command line tools
+    - name: Install Android SDK
+      run: |
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+        cd $ANDROID_SDK_ROOT/cmdline-tools
+        wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+        unzip cmdline-tools.zip
+        rm cmdline-tools.zip
+        mv cmdline-tools latest
+        export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
+        yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
+        sdkmanager --sdk_root=$ANDROID_SDK_ROOT "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-      # 6. Show Java and Android versions for verification
-      - name: Check environment
-        run: |
-          java -version
-          python3 --version
-          buildozer --version
-          sdkmanager --version
+    # 6. Build APK using Buildozer
+    - name: Build APK
+      run: |
+        buildozer android debug
 
-      # 7. Build APK
-      - name: Build APK
-        run: |
-          buildozer android debug
-
-      # 8. Upload APK artifact
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: CBK-APK
-          path: bin/*.apk
+    # 7. Upload APK artifact
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: CBK-APK
+        path: bin/*.apk
