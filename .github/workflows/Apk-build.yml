@@ -10,8 +10,8 @@ jobs:
   build-android:
     runs-on: ubuntu-latest
     env:
-      ANDROID_HOME: ${{ runner.temp }}/android-sdk
-      PATH: ${{ runner.temp }}/android-sdk/cmdline-tools/latest/bin:${{ runner.temp }}/android-sdk/platform-tools:${PATH}
+      ANDROID_HOME: ${{ github.workspace }}/android-sdk
+      PATH: ${{ github.workspace }}/android-sdk/cmdline-tools/latest/bin:${{ github.workspace }}/android-sdk/platform-tools:${PATH}
 
     steps:
       # 1. Checkout the repo
