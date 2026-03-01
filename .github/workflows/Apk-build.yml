@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
@@ -23,20 +21,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y \
             tar unzip wget git \
-            openjdk-17-jdk \
+            openjdk-8-jdk \
             python3-dev build-essential clang \
             libffi-dev libssl-dev
 
-      - name: Set Java 17
+      - name: Set Java 8
         run: |
-          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
-          echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
+          echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> $GITHUB_ENV
+          echo "/usr/lib/jvm/java-8-openjdk-amd64/bin" >> $GITHUB_PATH
           java -version
 
       - name: Install Python deps
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install buildozer cython
+          pip install --upgrade pip
+          pip install buildozer cython
 
       - name: Android SDK env
         run: |
@@ -45,36 +43,29 @@ jobs:
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
           echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-      - name: Install Android SDK cmdline tools
+      - name: Install SDK tools
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O tools.zip
           unzip -q tools.zip -d $HOME/android-sdk/cmdline-tools
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
 
       - name: Accept licenses
         run: yes | sdkmanager --sdk_root=$HOME/android-sdk --licenses
 
-      - name: Install stable SDK packages ONLY
+      - name: Install Android SDK packages
         run: |
           sdkmanager --sdk_root=$HOME/android-sdk \
             "platform-tools" \
-            "platforms;android-33" \
-            "build-tools;33.0.2" \
-            "ndk;25.2.9519653"
+            "platforms;android-30" \
+            "build-tools;30.0.3" \
+            "ndk;23.1.7779620"
 
-      - name: Verify build-tools installed
-        run: |
-          ls $HOME/android-sdk/build-tools
-          $HOME/android-sdk/build-tools/33.0.2/aidl version
-
-      - name: Clean Buildozer cache (kills preview SDK ghosts)
+      - name: Clean buildozer cache
         run: rm -rf .buildozer
 
       - name: Build APK
-        run: |
-          cd $GITHUB_WORKSPACE
-          buildozer -v android debug
+        run: buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
