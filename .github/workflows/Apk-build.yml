@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install system dependencies
+      - name: Install system deps
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -27,7 +27,7 @@ jobs:
             python3-dev build-essential clang \
             libffi-dev libssl-dev
 
-      - name: Force Java 17
+      - name: Set Java 17
         run: |
           echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
           echo "/usr/lib/jvm/java-17-openjdk-amd64/bin" >> $GITHUB_PATH
@@ -52,10 +52,10 @@ jobs:
           unzip -q tools.zip -d $HOME/android-sdk/cmdline-tools
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
 
-      - name: Accept all Android licenses
+      - name: Accept licenses
         run: yes | sdkmanager --sdk_root=$HOME/android-sdk --licenses
 
-      - name: Install Android SDK packages (stable only)
+      - name: Install stable SDK packages ONLY
         run: |
           sdkmanager --sdk_root=$HOME/android-sdk \
             "platform-tools" \
@@ -63,9 +63,13 @@ jobs:
             "build-tools;33.0.2" \
             "ndk;25.2.9519653"
 
-      - name: Force Buildozer to use stable Build-Tools
+      - name: Verify build-tools installed
         run: |
-          sed -i 's/^android.build_tools_version.*/android.build_tools_version = 33.0.2/' buildozer.spec || true
+          ls $HOME/android-sdk/build-tools
+          $HOME/android-sdk/build-tools/33.0.2/aidl version
+
+      - name: Clean Buildozer cache (kills preview SDK ghosts)
+        run: rm -rf .buildozer
 
       - name: Build APK
         run: |
