@@ -5,7 +5,7 @@ import androidx.room.Room
 import com.helasacco.app.data.local.HelaSaccoDB
 import com.helasacco.app.data.local.dao.*
 import com.helasacco.app.data.repository.*
-import com.helasacco.app.ui.admin.NotificationRepository
+import com.helasacco.app.data.repository.NotificationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
