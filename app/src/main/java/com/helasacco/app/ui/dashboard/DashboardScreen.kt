@@ -375,7 +375,7 @@ private fun QuickActionsGrid(role: UserRole, onNavigate: (String) -> Unit) {
             allowedRoles = setOf(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MANAGER,
                 UserRole.BRANCH_MANAGER, UserRole.LOANS_OFFICER, UserRole.SENIOR_LOANS_OFFICER,
                 UserRole.ACCOUNTANT, UserRole.AUDITOR)),
-        QuickAction(Icons.Filled.SmartToy, "AI Assist", Routes.AI_ASSISTANT,
+        //QuickAction(Icons.Filled.SmartToy, "AI Assist", Routes.AI_ASSISTANT,
             { MaterialTheme.colorScheme.primaryContainer }, { MaterialTheme.colorScheme.primary }),
     )
 
