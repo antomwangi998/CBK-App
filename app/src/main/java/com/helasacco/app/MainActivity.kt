@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
@@ -143,7 +142,7 @@ fun HelaApp(isLoggedIn: Boolean) {
             composable(Routes.TRANSACTION_LIST) {
                 // List reuses member detail transaction history — placeholder for full list
                 Surface(Modifier.fillMaxSize()) {
-                    Text("All Transactions — use member profile for now", Modifier.padding(androidx.compose.ui.unit.dp.times(16f)))
+                    Text("All Transactions — use member profile for now", Modifier.padding(16.dp))
                 }
             }
             composable(
