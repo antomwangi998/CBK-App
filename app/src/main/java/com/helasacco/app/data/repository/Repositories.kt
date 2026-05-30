@@ -179,7 +179,7 @@ class MemberRepositoryImpl @Inject constructor(
 
     override suspend fun updateKycStatus(id: String, status: KycStatus, verifiedBy: String): Result<Unit> {
         return try {
-            memberDao.updateKycStatus(id, status.value, verifiedBy, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            memberDao.updateKycStatus(id, status.value, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error("Failed to update KYC: ${e.message}", e)

@@ -125,7 +125,7 @@ interface MemberDao {
     suspend fun softDelete(id: String, timestamp: String)
 
     @Query("UPDATE members SET kyc_status = :status, updated_at = :timestamp WHERE id = :id")
-    suspend fun updateKycStatus(id: String, status: String, verifiedBy: String, timestamp: String)
+    suspend fun updateKycStatus(id: String, status: String, timestamp: String)
 
     @Query("SELECT * FROM members WHERE sync_status = 'pending' LIMIT 100")
     suspend fun getPendingSync(): List<MemberEntity>
@@ -289,6 +289,6 @@ interface AuditLogDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(log: AuditLogEntity)
 
-    @Query("SELECT hash, blockchain_index FROM audit_log ORDER BY timestamp DESC LIMIT 1")
+    @Query("SELECT * FROM audit_log ORDER BY timestamp DESC LIMIT 1")
     suspend fun getLastEntry(): AuditLogEntity?
 }

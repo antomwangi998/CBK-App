@@ -252,7 +252,7 @@ data class NotificationEntity(
 
 // ── Audit Log ─────────────────────────────────────────────────────────────────
 
-@Entity(tableName = "audit_log", indices = [Index("user_id"), Index("created_at")])
+@Entity(tableName = "audit_log", indices = [Index("user_id"), Index("timestamp")])
 data class AuditLogEntity(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "user_id") val userId: String? = null,
