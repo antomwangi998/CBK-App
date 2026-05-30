@@ -145,12 +145,6 @@ private fun KycMemberRow(member: Member, onApprove: () -> Unit, onReject: () -> 
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 
-interface NotificationRepository {
-    fun getForUser(userId: String, memberId: String?): kotlinx.coroutines.flow.Flow<List<Notification>>
-    fun getUnreadCount(userId: String): kotlinx.coroutines.flow.Flow<Int>
-    suspend fun markRead(id: String)
-    suspend fun markAllRead(userId: String)
-}
 
 data class NotificationsUiState(
     val notifications: List<Notification> = emptyList(),
