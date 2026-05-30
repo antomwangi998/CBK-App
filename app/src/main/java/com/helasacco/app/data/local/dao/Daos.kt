@@ -124,7 +124,7 @@ interface MemberDao {
     @Query("UPDATE members SET deleted_at = :timestamp WHERE id = :id")
     suspend fun softDelete(id: String, timestamp: String)
 
-    @Query("UPDATE members SET kyc_status = :status, kyc_verified_by = :verifiedBy, kyc_verified_at = :timestamp WHERE id = :id")
+    @Query("UPDATE members SET kyc_status = :status, updated_at = :timestamp WHERE id = :id")
     suspend fun updateKycStatus(id: String, status: String, verifiedBy: String, timestamp: String)
 
     @Query("SELECT * FROM members WHERE sync_status = 'pending' LIMIT 100")
