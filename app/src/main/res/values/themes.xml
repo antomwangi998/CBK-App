@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.HelaSacco" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.HelaSacco.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#006C4C</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="windowSplashScreenBrandingImage">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.HelaSacco</item>
+    </style>
+</resources>
