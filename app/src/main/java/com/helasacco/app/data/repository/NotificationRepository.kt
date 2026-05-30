@@ -3,12 +3,18 @@ package com.helasacco.app.data.repository
 import com.helasacco.app.data.local.dao.NotificationDao
 import com.helasacco.app.data.local.entities.toDomain
 import com.helasacco.app.domain.model.Notification
-import com.helasacco.app.ui.admin.NotificationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+
+interface NotificationRepository {
+    fun getForUser(userId: String, memberId: String?): Flow<List<Notification>>
+    fun getUnreadCount(userId: String): Flow<Int>
+    suspend fun markRead(id: String)
+    suspend fun markAllRead(userId: String)
+}
 
 class NotificationRepositoryImpl @Inject constructor(
     private val notificationDao: NotificationDao,
