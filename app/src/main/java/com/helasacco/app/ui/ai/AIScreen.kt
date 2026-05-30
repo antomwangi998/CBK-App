@@ -233,3 +233,4 @@ private fun ChatBubble(message: ChatMessage) {
         }
     }
 }
+
