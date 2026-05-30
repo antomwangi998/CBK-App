@@ -8,9 +8,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -105,7 +105,7 @@ class AIViewModel @Inject constructor() : ViewModel() {
 
         val request = okhttp3.Request.Builder()
             .url("https://api.anthropic.com/v1/messages")
-            .post(okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), body.toString()))
+            .post(body.toString().toRequestBody("application/json".toMediaType()))
             .addHeader("x-api-key", com.helasacco.app.BuildConfig.ANTHROPIC_API_KEY)
             .addHeader("anthropic-version", "2023-06-01")
             .addHeader("content-type", "application/json")
@@ -113,7 +113,7 @@ class AIViewModel @Inject constructor() : ViewModel() {
 
         return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             val response = client.newCall(request).execute()
-            val json = org.json.JSONObject(response.body()?.string() ?: "")
+            val json = org.json.JSONObject(response.body?.string() ?: "")
             json.getJSONArray("content").getJSONObject(0).getString("text")
         }
     }

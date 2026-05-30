@@ -5,6 +5,7 @@
     <style name="Theme.HelaSacco.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#006C4C</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="windowSplashScreenBrandingImage">@drawable/ic_splash_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.HelaSacco</item>
     </style>
 </resources>

@@ -61,7 +61,7 @@ class KycViewModel @Inject constructor(
     fun updateKyc(memberId: String, status: KycStatus) {
         viewModelScope.launch {
             val session = sessionManager.session.first()
-            memberRepository.updateKycStatus(memberId, status, session?.userId ?: "system")
+            memberRepository.updateKycStatus(memberId, status)
             _uiState.update { it.copy(successMessage = "KYC status updated to ${status.value}") }
             load()
         }
@@ -144,7 +144,6 @@ private fun KycMemberRow(member: Member, onApprove: () -> Unit, onReject: () -> 
 }
 
 // ── Notifications ─────────────────────────────────────────────────────────────
-
 
 data class NotificationsUiState(
     val notifications: List<Notification> = emptyList(),

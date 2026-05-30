@@ -9,13 +9,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
-interface NotificationRepository {
-    fun getForUser(userId: String, memberId: String?): Flow<List<Notification>>
-    fun getUnreadCount(userId: String): Flow<Int>
-    suspend fun markRead(id: String)
-    suspend fun markAllRead(userId: String)
-}
-
 class NotificationRepositoryImpl @Inject constructor(
     private val notificationDao: NotificationDao,
 ) : NotificationRepository {

@@ -154,7 +154,7 @@ interface MemberRepository {
     suspend fun getByMemberNo(memberNo: String): Member?
     suspend fun search(query: String): List<Member>
     suspend fun save(member: Member, createdBy: String? = null): Result<Member>
-    suspend fun updateKycStatus(id: String, status: KycStatus, verifiedBy: String): Result<Unit>
+    suspend fun updateKycStatus(id: String, status: KycStatus): Result<Unit>
 }
 
 class MemberRepositoryImpl @Inject constructor(
@@ -177,7 +177,7 @@ class MemberRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateKycStatus(id: String, status: KycStatus, verifiedBy: String): Result<Unit> {
+    override suspend fun updateKycStatus(id: String, status: KycStatus): Result<Unit> {
         return try {
             memberDao.updateKycStatus(id, status.value, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
             Result.Success(Unit)
