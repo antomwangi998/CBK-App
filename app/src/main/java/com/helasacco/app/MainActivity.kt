@@ -211,11 +211,9 @@ fun HelaApp(isLoggedIn: Boolean) {
             }
 
             composable(Routes.AI_ASSISTANT) {
-                Surface(Modifier.fillMaxSize()) { Text("AI Assistant - Coming Soon") }
-            })
+                Surface(Modifier.fillMaxSize()) { Text("AI - Coming Soon") }
             }
 
-            // ── Investments ───────────────────────────────────────────────────
             composable(Routes.INVESTMENTS) {
                 InvestmentsScreen(onBack = { navController.popBackStack() })
             }
