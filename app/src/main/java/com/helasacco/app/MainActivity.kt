@@ -17,7 +17,6 @@ import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.helasacco.app.di.SessionManager
 import com.helasacco.app.ui.admin.*
-import com.helasacco.app.ui.ai.AIAssistantScreen
 import com.helasacco.app.ui.dashboard.DashboardScreen
 import com.helasacco.app.ui.investments.InvestmentsScreen
 import com.helasacco.app.ui.loans.*
@@ -213,7 +212,7 @@ fun HelaApp(isLoggedIn: Boolean) {
 
             // ── AI Assistant ──────────────────────────────────────────────────
             composable(Routes.AI_ASSISTANT) {
-                AIAssistantScreen(onBack = { navController.popBackStack() })
+                Surface(Modifier.fillMaxSize()) { Text("AI Assistant - Coming Soon", Modifier.padding(16.dp)) } })
             }
 
             // ── Investments ───────────────────────────────────────────────────
