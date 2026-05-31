@@ -11,28 +11,25 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.helasacco.app.di.SessionManager
-import com.helasacco.app.SeedViewModel
 import com.helasacco.app.ui.admin.*
 import com.helasacco.app.ui.dashboard.DashboardScreen
 import com.helasacco.app.ui.investments.InvestmentsScreen
 import com.helasacco.app.ui.loans.*
 import com.helasacco.app.ui.login.LoginScreen
-import com.helasacco.app.ui.register.CustomerRegisterScreen
 import com.helasacco.app.ui.members.*
 import com.helasacco.app.ui.navigation.HelaBottomBar
 import com.helasacco.app.ui.navigation.Routes
+import com.helasacco.app.ui.register.CustomerRegisterScreen
 import com.helasacco.app.ui.reports.ReportsScreen
 import com.helasacco.app.ui.theme.HelaSaccoTheme
 import com.helasacco.app.ui.transactions.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -43,16 +40,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-        // Seed default admin — remove after first login
-        CoroutineScope(Dispatchers.IO).launch {
-            authRepository.createUser(
-                username = "admin",
-                password = "Admin@1234",
-                role = com.helasacco.app.domain.model.UserRole.SUPER_ADMIN,
-                fullName = "System Administrator",
-                branchId = null,
-            )
-        }
         enableEdgeToEdge()
         setContent {
             val theme by sessionManager.theme.collectAsStateWithLifecycle(initialValue = "system")
@@ -76,10 +63,11 @@ private val bottomNavRoutes = setOf(
 @Composable
 fun HelaApp(isLoggedIn: Boolean) {
     val navController = rememberNavController()
-    // Seeds default admin on first run — safe to call repeatedly
-    hiltViewModel<SeedViewModel>()
     val backStack by navController.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
+
+    // Seed default admin on first run
+    hiltViewModel<SeedViewModel>()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -90,24 +78,28 @@ fun HelaApp(isLoggedIn: Boolean) {
             startDestination = if (isLoggedIn) Routes.DASHBOARD else Routes.LOGIN,
             modifier = Modifier.padding(padding),
         ) {
-
-            // ── Auth ──────────────────────────────────────────────────────────
-            composable(Routes.CUSTOMER_REGISTER) {
-                CustomerRegisterScreen(
-                    onBack = { navController.popBackStack() },
-                    onSuccess = { navController.navigate(Routes.LOGIN) { popUpTo(Routes.CUSTOMER_REGISTER) { inclusive = true } } },
+            composable(Routes.LOGIN) {
+                LoginScreen(
+                    onLoginSuccess = {
+                        navController.navigate(Routes.DASHBOARD) {
+                            popUpTo(Routes.LOGIN) { inclusive = true }
+                        }
+                    },
+                    onRegister = { navController.navigate(Routes.CUSTOMER_REGISTER) },
                 )
             }
 
-            composable(Routes.LOGIN) {
-                LoginScreen(
-                    onRegister = { navController.navigate(Routes.CUSTOMER_REGISTER) },
-                    onLoginSuccess = {
-                    navController.navigate(Routes.DASHBOARD) { popUpTo(Routes.LOGIN) { inclusive = true } }
-                })
+            composable(Routes.CUSTOMER_REGISTER) {
+                CustomerRegisterScreen(
+                    onBack = { navController.popBackStack() },
+                    onSuccess = {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(Routes.CUSTOMER_REGISTER) { inclusive = true }
+                        }
+                    },
+                )
             }
 
-            // ── Dashboard ─────────────────────────────────────────────────────
             composable(Routes.DASHBOARD) {
                 DashboardScreen(
                     onNavigate = { navController.navigate(it) },
@@ -115,7 +107,6 @@ fun HelaApp(isLoggedIn: Boolean) {
                 )
             }
 
-            // ── Members ───────────────────────────────────────────────────────
             composable(Routes.MEMBER_LIST) {
                 MemberListScreen(
                     onMemberClick = { navController.navigate(Routes.memberDetail(it)) },
@@ -123,6 +114,7 @@ fun HelaApp(isLoggedIn: Boolean) {
                     onBack = { navController.popBackStack() },
                 )
             }
+
             composable(Routes.MEMBER_NEW) {
                 MemberRegistrationScreen(
                     onSuccess = { memberId ->
@@ -133,28 +125,28 @@ fun HelaApp(isLoggedIn: Boolean) {
                     onBack = { navController.popBackStack() },
                 )
             }
+
             composable(
                 Routes.MEMBER_DETAIL,
                 arguments = listOf(navArgument("memberId") { type = NavType.StringType }),
-            ) { backStackEntry ->
+            ) {
                 MemberDetailScreen(
-                    memberId = backStackEntry.arguments?.getString("memberId") ?: "",
-                    onEdit = { navController.navigate(Routes.memberEdit(it)) },
+                    memberId = it.arguments?.getString("memberId") ?: "",
+                    onEdit = { id -> navController.navigate(Routes.memberEdit(id)) },
                     onBack = { navController.popBackStack() },
                 )
             }
+
             composable(
                 Routes.MEMBER_EDIT,
                 arguments = listOf(navArgument("memberId") { type = NavType.StringType }),
-            ) { backStackEntry ->
-                // Edit reuses registration VM pre-populated — same composable, future enhancement
+            ) {
                 MemberRegistrationScreen(
                     onSuccess = { navController.popBackStack() },
                     onBack = { navController.popBackStack() },
                 )
             }
 
-            // ── Transactions ──────────────────────────────────────────────────
             composable(Routes.TRANSACTION_DEPOSIT) {
                 DepositScreen(onBack = { navController.popBackStack() })
             }
@@ -165,10 +157,7 @@ fun HelaApp(isLoggedIn: Boolean) {
                 TransferScreen(onBack = { navController.popBackStack() })
             }
             composable(Routes.TRANSACTION_LIST) {
-                // List reuses member detail transaction history — placeholder for full list
-                Surface(Modifier.fillMaxSize()) {
-                    Text("All Transactions — use member profile for now", Modifier.padding(16.dp))
-                }
+                Surface(Modifier.fillMaxSize()) { Text("Transactions", Modifier.padding(16.dp)) }
             }
             composable(
                 Routes.TRANSACTION_DETAIL,
@@ -177,7 +166,6 @@ fun HelaApp(isLoggedIn: Boolean) {
                 Surface(Modifier.fillMaxSize()) { Text("Transaction Detail") }
             }
 
-            // ── Loans ─────────────────────────────────────────────────────────
             composable(Routes.LOAN_LIST) {
                 LoanListScreen(
                     onLoanClick = { navController.navigate(Routes.loanDetail(it)) },
@@ -199,11 +187,10 @@ fun HelaApp(isLoggedIn: Boolean) {
             composable(
                 Routes.LOAN_DETAIL,
                 arguments = listOf(navArgument("loanId") { type = NavType.StringType }),
-            ) { backStackEntry ->
-                val loanId = backStackEntry.arguments?.getString("loanId") ?: ""
+            ) {
                 LoanDetailScreen(
-                    loanId = loanId,
-                    onRepay = { navController.navigate(Routes.loanRepayment(it)) },
+                    loanId = it.arguments?.getString("loanId") ?: "",
+                    onRepay = { id -> navController.navigate(Routes.loanRepayment(id)) },
                     onBack = { navController.popBackStack() },
                 )
             }
@@ -211,35 +198,27 @@ fun HelaApp(isLoggedIn: Boolean) {
                 Routes.LOAN_REPAYMENT,
                 arguments = listOf(navArgument("loanId") { type = NavType.StringType }),
             ) {
-                // Repayment is a deposit with loan account pre-selected
                 DepositScreen(onBack = { navController.popBackStack() })
             }
 
-            // ── Admin ─────────────────────────────────────────────────────────
             composable(Routes.KYC_APPROVAL) {
                 KycApprovalScreen(onBack = { navController.popBackStack() })
             }
             composable(Routes.NOTIFICATIONS) {
                 NotificationsScreen(onBack = { navController.popBackStack() })
             }
-
-            // ── Settings ──────────────────────────────────────────────────────
             composable(Routes.SETTINGS) {
                 SettingsScreen(
                     onLogout = { navController.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } } },
                     onBack = { navController.popBackStack() },
                 )
             }
-
-            // ── Reports ───────────────────────────────────────────────────────
             composable(Routes.REPORTS) {
                 ReportsScreen(onBack = { navController.popBackStack() })
             }
-
             composable(Routes.AI_ASSISTANT) {
-                Surface(Modifier.fillMaxSize()) { Text("AI - Coming Soon") }
+                Surface(Modifier.fillMaxSize()) { Text("AI Assistant - Coming Soon", Modifier.padding(16.dp)) }
             }
-
             composable(Routes.INVESTMENTS) {
                 InvestmentsScreen(onBack = { navController.popBackStack() })
             }
