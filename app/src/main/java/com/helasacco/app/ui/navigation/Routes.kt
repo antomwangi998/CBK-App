@@ -57,6 +57,7 @@ object Routes {
 
     // Investments
     const val INVESTMENTS = "investments"
+    const val CUSTOMER_REGISTER = "register"
 
     // Helper builders
     fun memberDetail(id: String) = "members/$id"
@@ -67,5 +68,3 @@ object Routes {
     fun loanRepayment(id: String) = "loans/$id/repayment"
     fun loanSchedule(id: String) = "loans/$id/schedule"
 }
-
-    const val CUSTOMER_REGISTER = "register"

@@ -12,7 +12,6 @@ import javax.inject.Inject
 class SeedViewModel @Inject constructor(
     private val authRepository: AuthRepository,
 ) : ViewModel() {
-
     init {
         viewModelScope.launch {
             authRepository.createUser(
