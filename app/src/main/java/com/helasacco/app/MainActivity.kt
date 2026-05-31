@@ -17,11 +17,11 @@ import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.helasacco.app.di.SessionManager
 import com.helasacco.app.ui.admin.*
-import com.helasacco.app.ui.ai.AIAssistantScreen
 import com.helasacco.app.ui.dashboard.DashboardScreen
 import com.helasacco.app.ui.investments.InvestmentsScreen
 import com.helasacco.app.ui.loans.*
 import com.helasacco.app.ui.login.LoginScreen
+import com.helasacco.app.ui.register.CustomerRegisterScreen
 import com.helasacco.app.ui.members.*
 import com.helasacco.app.ui.navigation.HelaBottomBar
 import com.helasacco.app.ui.navigation.Routes
@@ -77,9 +77,23 @@ fun HelaApp(isLoggedIn: Boolean) {
 
             // ── Auth ──────────────────────────────────────────────────────────
             composable(Routes.LOGIN) {
-                LoginScreen(onLoginSuccess = {
-                    navController.navigate(Routes.DASHBOARD) { popUpTo(Routes.LOGIN) { inclusive = true } }
-                })
+                LoginScreen(
+                    onLoginSuccess = {
+                        navController.navigate(Routes.DASHBOARD) { popUpTo(Routes.LOGIN) { inclusive = true } }
+                    },
+                    onRegister = { navController.navigate(Routes.CUSTOMER_REGISTER) },
+                )
+            }
+
+            composable(Routes.CUSTOMER_REGISTER) {
+                CustomerRegisterScreen(
+                    onBack = { navController.popBackStack() },
+                    onSuccess = {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(Routes.CUSTOMER_REGISTER) { inclusive = true }
+                        }
+                    },
+                )
             }
 
             // ── Dashboard ─────────────────────────────────────────────────────
@@ -213,7 +227,7 @@ fun HelaApp(isLoggedIn: Boolean) {
 
             // ── AI Assistant ──────────────────────────────────────────────────
             composable(Routes.AI_ASSISTANT) {
-                AIAssistantScreen(onBack = { navController.popBackStack() })
+                Surface(Modifier.fillMaxSize()) { Text("AI Assistant - Coming Soon", Modifier.padding(16.dp)) }
             }
 
             // ── Investments ───────────────────────────────────────────────────
