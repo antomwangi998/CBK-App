@@ -28,6 +28,9 @@ import com.helasacco.app.ui.reports.ReportsScreen
 import com.helasacco.app.ui.theme.HelaSaccoTheme
 import com.helasacco.app.ui.transactions.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,6 +41,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        // Seed default admin — remove after first login
+        CoroutineScope(Dispatchers.IO).launch {
+            authRepository.createUser(
+                username = "admin",
+                password = "Admin@1234",
+                role = com.helasacco.app.domain.model.UserRole.SUPER_ADMIN,
+                fullName = "System Administrator",
+                branchId = null,
+            )
+        }
         enableEdgeToEdge()
         setContent {
             val theme by sessionManager.theme.collectAsStateWithLifecycle(initialValue = "system")
