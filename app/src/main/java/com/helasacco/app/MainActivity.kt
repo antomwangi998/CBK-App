@@ -16,6 +16,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.helasacco.app.di.SessionManager
+import com.helasacco.app.SeedViewModel
 import com.helasacco.app.ui.admin.*
 import com.helasacco.app.ui.dashboard.DashboardScreen
 import com.helasacco.app.ui.investments.InvestmentsScreen
@@ -75,6 +76,8 @@ private val bottomNavRoutes = setOf(
 @Composable
 fun HelaApp(isLoggedIn: Boolean) {
     val navController = rememberNavController()
+    // Seeds default admin on first run — safe to call repeatedly
+    hiltViewModel<SeedViewModel>()
     val backStack by navController.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
 
