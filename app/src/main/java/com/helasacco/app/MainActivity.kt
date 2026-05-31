@@ -21,6 +21,7 @@ import com.helasacco.app.ui.dashboard.DashboardScreen
 import com.helasacco.app.ui.investments.InvestmentsScreen
 import com.helasacco.app.ui.loans.*
 import com.helasacco.app.ui.login.LoginScreen
+import com.helasacco.app.ui.register.CustomerRegisterScreen
 import com.helasacco.app.ui.members.*
 import com.helasacco.app.ui.navigation.HelaBottomBar
 import com.helasacco.app.ui.navigation.Routes
@@ -88,8 +89,17 @@ fun HelaApp(isLoggedIn: Boolean) {
         ) {
 
             // ── Auth ──────────────────────────────────────────────────────────
+            composable(Routes.CUSTOMER_REGISTER) {
+                CustomerRegisterScreen(
+                    onBack = { navController.popBackStack() },
+                    onSuccess = { navController.navigate(Routes.LOGIN) { popUpTo(Routes.CUSTOMER_REGISTER) { inclusive = true } } },
+                )
+            }
+
             composable(Routes.LOGIN) {
-                LoginScreen(onLoginSuccess = {
+                LoginScreen(
+                    onRegister = { navController.navigate(Routes.CUSTOMER_REGISTER) },
+                    onLoginSuccess = {
                     navController.navigate(Routes.DASHBOARD) { popUpTo(Routes.LOGIN) { inclusive = true } }
                 })
             }

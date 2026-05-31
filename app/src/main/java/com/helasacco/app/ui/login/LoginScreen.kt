@@ -38,6 +38,7 @@ import java.util.Locale
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
+    onRegister: () -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -75,7 +76,17 @@ fun LoginScreen(
             // ── Security badge ───────────────────────────────────────────
             SecurityBadge()
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(8.dp))
+
+            TextButton(
+                onClick = onRegister,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("New member? ", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Create Account", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+            }
+
+            Spacer(Modifier.height(24.dp))
         }
     }
 }

@@ -67,3 +67,5 @@ object Routes {
     fun loanRepayment(id: String) = "loans/$id/repayment"
     fun loanSchedule(id: String) = "loans/$id/schedule"
 }
+
+    const val CUSTOMER_REGISTER = "register"
